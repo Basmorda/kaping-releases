@@ -1,0 +1,30 @@
+# Publie automatiquement une version de Kaping quand le dossier "latest/" change :
+# lit le numéro dans latest/version.json et crée la release vX.Y avec Kaping.apk et version.json.
+name: Publier la version
+
+on:
+  push:
+    branches: [main]
+    paths: ["latest/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Créer la release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NAME=$(jq -r .versionName latest/version.json)
+          NOTES=$(jq -r .notes latest/version.json)
+          TAG="v$NAME"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" latest/Kaping.apk latest/version.json --clobber
+          else
+            gh release create "$TAG" latest/Kaping.apk latest/version.json --title "Kaping $NAME" --notes "$NOTES" --latest
+          fi
