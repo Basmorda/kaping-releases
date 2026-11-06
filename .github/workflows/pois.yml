@@ -1,0 +1,80 @@
+# Points d'intérêt de LoupRide (points d'eau, boulangeries, cimetières, toilettes, réparation vélo,
+# cafés, abris, campings, supermarchés), extraits d'OpenStreetMap une fois par mois, région par région.
+# Résultat : release « pois » avec un fichier .json.gz par région et un index.json lu par l'appli.
+# Tout est gratuit (GitHub Actions et releases d'un dépôt public), aucun serveur à payer.
+name: Points d'intérêt LoupRide
+
+on:
+  schedule:
+    - cron: "17 2 3 * *"   # le 3 de chaque mois
+  workflow_dispatch:
+    inputs:
+      zones:
+        description: "Continents ou pays (ids Geofabrik, séparés par des virgules)"
+        default: "europe"
+
+permissions:
+  contents: write
+
+jobs:
+  liste:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: python3 outils/pois_liste.py "${{ github.event.inputs.zones || 'europe' }}" >> "$GITHUB_OUTPUT"
+
+  extraire:
+    needs: liste
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        r: ${{ fromJson(needs.liste.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Outils
+        run: sudo apt-get update -q && sudo apt-get install -y -q osmium-tool
+      - name: Extraction ${{ matrix.r.name }}
+        run: |
+          curl -fsSL --retry 3 -A "LoupRide-pois/1.0" -o in.pbf "${{ matrix.r.url }}"
+          osmium tags-filter in.pbf \
+            n/amenity=drinking_water,water_point,toilets,cafe,bar,pub,shelter,bicycle_repair_station \
+            n/man_made=water_tap \
+            nwr/shop=bakery,supermarket,convenience,bicycle \
+            wr/landuse=cemetery wr/amenity=grave_yard,toilets,cafe,bar,pub,shelter \
+            nwr/tourism=camp_site \
+            -o f.pbf
+          rm in.pbf
+          osmium export f.pbf -f geojsonseq --geometry-types=point,linestring,polygon -o f.geojsonseq
+          python3 outils/pois.py f.geojsonseq "${{ matrix.r.id }}" "${{ matrix.r.name }}" "${{ matrix.r.country }}" "${{ matrix.r.countryName }}" out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pois-${{ matrix.r.id }}
+          path: out/
+          retention-days: 3
+
+  publier:
+    needs: extraire
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pois-*
+          merge-multiple: true
+          path: out
+      - name: Index et release « pois »
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 outils/pois_index.py out > out/index.json
+          echo "$(jq '.regions | length' out/index.json) régions"
+          gh release view pois >/dev/null 2>&1 || gh release create pois --latest=false \
+            --title "Points d'intérêt LoupRide" \
+            --notes "Données © contributeurs OpenStreetMap, licence ODbL. Mises à jour chaque mois automatiquement."
+          gh release upload pois out/*.json.gz out/index.json --clobber
