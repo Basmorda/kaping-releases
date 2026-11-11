@@ -16,7 +16,7 @@
 </head>
 <body>
 <h1>LoupRide</h1>
-<p class="date">Mise à jour / Last updated: 7 novembre 2026 / November 7, 2026</p>
+<p class="date">Mise à jour / Last updated: 11 novembre 2026 / November 11, 2026</p>
 <nav><a href="#fr">Français</a><a href="#en">English</a></nav>
 
 <section id="fr">
@@ -31,6 +31,7 @@
   <li><strong>Photos</strong> : celles que tu choisis avec le sélecteur de photos d'Android sont placées sur la carte de ta sortie ou utilisées dans les images à partager. Elles ne sont ni copiées ni envoyées. (Sur Android 12 et avant, si tu l'autorises, LoupRide retrouve aussi dans ta galerie les photos prises pendant une sortie.)</li>
   <li><strong>Profil et santé</strong> (sexe, âge, taille, poids, FC max que tu saisis) : pour estimer les calories brûlées. Gardés sur le téléphone.</li>
   <li><strong>Vélos, entretien et avatar</strong> : enregistrés sur le téléphone.</li>
+  <li><strong>Niveau de batterie</strong> : lu sur le téléphone pour estimer la batterie nécessaire à un parcours ; ta consommation moyenne est calculée et gardée sur le téléphone.</li>
   <li><strong>Fichiers de parcours</strong> (GPX, TCX, FIT) : ceux que tu ouvres ou partages avec LoupRide, et ceux des dossiers que tu choisis de surveiller (par exemple Téléchargements ou WhatsApp). LoupRide n'y lit que les fichiers de parcours.</li>
   <li><strong>Adresse de la maison</strong> (position que tu choisis) : pour le bouton « Rentrer à la maison ».</li>
   <li><strong>Capteurs de mouvement</strong> : pour la détection de chute, si tu l'actives.</li>
@@ -42,6 +43,7 @@
 <p>Pour fonctionner, l'application télécharge des données publiques. Comme pour toute connexion internet, ces services reçoivent l'adresse IP du téléphone ; aucune donnée personnelle ne leur est envoyée en plus de ce qui suit :</p>
 <ul>
   <li><strong>OpenFreeMap</strong> (fonds de carte) et <strong>AWS Terrain Tiles</strong> (relief) : la zone de carte affichée.</li>
+  <li><strong>EOX</strong> (images satellite Sentinel-2 cloudless, licence CC BY 4.0) et <strong>IGN – Géoplateforme</strong> (photos aériennes de la France, Licence Ouverte Etalab 2.0) : la zone de carte affichée, seulement quand tu choisis le fond « Satellite ».</li>
   <li><strong>MET Norway</strong> (météo) : une position arrondie (environ 10 m) pour obtenir le vent et la météo.</li>
   <li><strong>brouter.de</strong> (calcul d'itinéraire en ligne, seulement si les données de calcul de ta zone ne sont pas téléchargées et que l'option est activée) : les points de départ, d'arrivée et de passage.</li>
   <li><strong>API Overpass d'OpenStreetMap</strong> (points d'intérêt) : la zone de carte affichée.</li>
@@ -71,6 +73,7 @@
   <li><strong>Photos</strong>: those you pick with the Android photo picker are placed on your ride map or used in share images. They are neither copied nor uploaded. (On Android 12 and earlier, if you allow it, LoupRide also finds photos taken during a ride in your gallery.)</li>
   <li><strong>Profile and health</strong> (sex, age, height, weight, max HR you enter): to estimate calories burned. Kept on the phone.</li>
   <li><strong>Bikes, maintenance and avatar</strong>: stored on the phone.</li>
+  <li><strong>Battery level</strong>: read on the phone to estimate the battery a route needs; your average consumption is computed and kept on the phone.</li>
   <li><strong>Route files</strong> (GPX, TCX, FIT): those you open or share with LoupRide, and those in folders you choose to watch (for example Downloads or WhatsApp). LoupRide only reads route files there.</li>
   <li><strong>Home location</strong> (position you choose): for the "Head home" button.</li>
   <li><strong>Motion sensors</strong>: for fall detection, if you turn it on.</li>
@@ -82,6 +85,7 @@
 <p>To work, the app downloads public data. As with any internet connection, these services receive the phone's IP address; no other personal data is sent to them beyond the following:</p>
 <ul>
   <li><strong>OpenFreeMap</strong> (map tiles) and <strong>AWS Terrain Tiles</strong> (relief): the map area displayed.</li>
+  <li><strong>EOX</strong> (Sentinel-2 cloudless satellite imagery, CC BY 4.0 licence) and <strong>IGN – Géoplateforme</strong> (aerial photos of France, Licence Ouverte Etalab 2.0): the map area displayed, only when you choose the "Satellite" map style.</li>
   <li><strong>MET Norway</strong> (weather): a rounded position (about 10 m) to get wind and weather.</li>
   <li><strong>brouter.de</strong> (online route calculation, only if the calculation data for your area is not downloaded and the option is on): start, finish and waypoints.</li>
   <li><strong>OpenStreetMap Overpass API</strong> (points of interest): the map area displayed.</li>
